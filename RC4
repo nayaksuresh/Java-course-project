@@ -1,0 +1,160 @@
+import java.io.*;
+import java.util.Scanner; 
+import java.awt.EventQueue;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+import javax.swing.JLabel;
+import javax.swing.JTextField;
+import javax.swing.JButton;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+
+class RC4 extends JFrame { 
+    private JPanel contentPane;
+	private JTextField txt;
+	private JTextField key1;
+    String encrypString;
+    String decrypString;
+
+    public RC4() {
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setBounds(100, 100, 450, 300);
+		contentPane = new JPanel();
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+
+		setContentPane(contentPane);
+		contentPane.setLayout(null);
+		
+		JLabel name = new JLabel("Enter plain text : ");
+		name.setBounds(25, 48, 93, 14);
+		contentPane.add(name);
+		
+        JLabel lblNewLabel = new JLabel("Enter key : ");
+		lblNewLabel.setBounds(25, 91, 93, 14);
+		contentPane.add(lblNewLabel);
+		
+		key1 = new JTextField();
+		key1.setBounds(143, 88, 187, 20);
+		contentPane.add(key1);
+		key1.setColumns(10);
+
+		JLabel enc = new JLabel("Encrypted text : ");
+		enc.setBounds(48, 145, 93, 14);
+		contentPane.add(enc);
+		
+		txt = new JTextField();
+		txt.setBounds(143, 45, 187, 20);
+		contentPane.add(txt);
+		txt.setColumns(10);
+		
+		JLabel enc1 = new JLabel("");
+		enc1.setBounds(151, 139, 181, 20);
+		contentPane.add(enc1);
+		
+        JLabel dec = new JLabel("Decrypted text : ");
+		dec.setBounds(48, 210, 93, 14);
+		contentPane.add(dec);
+		
+		JLabel dec1 = new JLabel("");
+		dec1.setBounds(143, 210, 187, 14);
+		contentPane.add(dec1);
+
+		JButton encrypt = new JButton("Encrypt");
+		encrypt.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+                if(e.getSource()==encrypt)
+                {
+                    int temp=0; 
+                    String ptext= txt.getText().toString(); 
+                    String key=key1.getText().toString();
+                    int s[]=new int[256]; 
+                    int k[]=new int[256];
+                    char ptextc[]=ptext.toCharArray(); 
+                    char keyc[]=key.toCharArray(); 
+                    int cipher[]=new int[ptext.length()]; 
+                    int dcpt[]=new int[ptext.length()]; 
+                    int ptexti[]=new int[ptext.length()]; 
+                    int keyi[]=new int[key.length()]; 
+                    for(int i=0;i<ptext.length();i++) 
+                    { 
+                        ptexti[i]=(int)ptextc[i]; 
+                    } 
+                    for(int i=0;i<key.length();i++) 
+                    { 
+                        keyi[i]=(int)keyc[i]; 
+                    } 
+                    for(int i=0;i<255;i++) 
+                    { 
+                            s[i]=i; 
+                            k[i]=keyi[i%key.length()]; 
+                    } 
+                    int j=0; 
+                    for(int i=0;i<255;i++) 
+                    { 
+                            j=(j+s[i]+k[i])%256; 
+                            temp=s[i]; 
+                            s[i]=s[j]; 
+                            s[j]=temp; 
+                    } 
+                    int i=0; 
+                    j=0; 
+                    int z=0; 
+                    for(int l=0;l<ptext.length();l++) 
+                    { 
+                            i=(l+1)%256; 
+                            j=(j+s[i])%256; 
+                            temp=s[i]; 
+                            s[i]=s[j]; 
+                            s[j]=temp; 
+                            z=s[(s[i]+s[j])%256]; 
+                            cipher[l]=z^ptexti[l]; 
+                            dcpt[l]=z^cipher[l]; 
+                    } 
+                    char convert[]=new char[cipher.length];
+                    char convert1[]=new char[cipher.length]; 
+                    for(int l=0;l<cipher.length;l++) 
+                    { 
+                        convert[l]=(char)cipher[l]; 
+                        convert1[l]=(char)dcpt[l]; 
+                        
+                    }
+                    encrypString = cipher.toString();
+                    decrypString = dcpt.toString();
+                    enc1.setText(encrypString);
+                }
+                
+			}
+		});
+		encrypt.setBounds(337, 44, 89, 23);
+		contentPane.add(encrypt);
+		
+		JButton decrypt = new JButton("Decrypt");
+		decrypt.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+                if(e.getSource()==decrypt)
+                {
+                    dec1.setText(txt.getText());
+                }
+			}
+		});
+		decrypt.setBounds(337, 87, 89, 23);
+		contentPane.add(decrypt);
+		
+		
+	}
+    public static void main(String args[])throws IOException 
+    { 
+        EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					RC4 frame = new RC4();
+					frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+    }   
+}
